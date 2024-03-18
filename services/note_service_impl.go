@@ -9,6 +9,7 @@ import (
 	"github.com/sarita-growexx/note_with_alarm/models"
 	"github.com/sarita-growexx/note_with_alarm/repository"
 	"github.com/sarita-growexx/note_with_alarm/utils"
+	"gorm.io/gorm"
 )
 
 const standardTime = "2006-01-02T15:04:05Z"
@@ -27,16 +28,16 @@ func NewNoteService(noteRepository repository.NoteRepository) *NoteServiceImpl {
 
 func (s *NoteServiceImpl) CreateNote(note *models.Note) error {
 
-	// existingNote, err := s.noteRepository.GetNoteByTitle(note.Title)
-	// if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-	// 	return errors.New("failed to check duplicate title")
-	// }
+	existingNote, err := s.noteRepository.GetNoteByTitle(note.Title)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return errors.New("failed to check duplicate title")
+	}
 
-	// if existingNote != nil {
-	// 	fmt.Println("Existing note=",existingNote)
-	// 	return errors.New("duplicate title, please choose a different title")
+	if existingNote != nil {
+		fmt.Println("Existing note=", existingNote)
+		return errors.New("duplicate title, please choose a different title")
 
-	// }
+	}
 
 	deadlineLocation, err := time.LoadLocation("Asia/Kolkata")
 	if err != nil {
@@ -84,9 +85,9 @@ func (s *NoteServiceImpl) UpdateNote(note *models.Note) error {
 	// 	return errors.New("failed to check duplicate title")
 	// }
 
-	// if existingNote.ID != 0 && existingNote.ID != note.ID {
-	// 	return errors.New("duplicate title, please choose a different title")
-	// }
+	if existingNote.ID != 0 && existingNote.ID != note.ID {
+		return errors.New("duplicate title, please choose a different title")
+	}
 
 	// Parse deadline
 	deadlineLocation, err := time.LoadLocation("Asia/Kolkata")
