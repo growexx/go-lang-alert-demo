@@ -5,7 +5,7 @@ import (
 )
 type Note struct {
 	ID        uint      `gorm:"primaryKey" json:"id"`
-	Title     string    `gorm:"unique;not null" json:"title"`
+	Title     string    `gorm:"not null" json:"title"`
 	Description   string    `json:"description"`
 	Deadline    time.Time `json:"deadline"`
 	CreatedAt   time.Time `json:"created_at"`
